@@ -1,28 +1,37 @@
 package com.gevernova.employeemanagementsystem;
 
-// Employee.java
+// Employee.java - encapsulation : Represents employee data only
 public class Employee {
-    private final String name;
-    private final Department department;
-    private final double salary;
+    // data members
+    private String name;
+    private double salary;
+    private String department;
     private int performanceScore;
 
-    public Employee(String name, Department department, double salary) {
-        if (name == null || department == null || salary < 0) {
-            throw new IllegalArgumentException("Invalid Employee parameters");
+    // constructors with exception handling
+    public Employee(String name, double salary, String department, int performanceScore) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Employee name cannot be empty");
+        }
+        if (salary < 0) {
+            throw new IllegalArgumentException("Salary cannot be negative");
+        }
+        if (department == null || department.isEmpty()) {
+            throw new IllegalArgumentException("Department cannot be empty");
+        }
+        if (performanceScore < 0 || performanceScore > 100) {
+            throw new IllegalArgumentException("Performance score must be between 0 and 100");
         }
         this.name = name;
-        this.department = department;
         this.salary = salary;
-        this.performanceScore = 0;
+        this.department = department;
+        this.performanceScore = performanceScore;
     }
 
+    // getters
     public String getName() { return name; }
-    public Department getDepartment() { return department; }
     public double getSalary() { return salary; }
+    public String getDepartment() { return department; }
     public int getPerformanceScore() { return performanceScore; }
-    public void setPerformanceScore(int score) {
-        if (score < 0 || score > 100) throw new IllegalArgumentException("Score must be 0-100");
-        this.performanceScore = score;
-    }
+
 }

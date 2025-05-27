@@ -1,66 +1,35 @@
-package com.gevernova;
-
-import com.gevernova.onlinebokstoremanagement.*;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+package com.gevernova;// CartServiceTest.java - Unit tests for Cart and Discount features
+import com.gevernova.onlinebookstoremanagementsystem.*;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class CartServiceTest {
 
     @Test
-    public void testAddAndRemoveBook() {
+    public void testCartWithFlatDiscount() throws Exception {
+        Author author = new Author("J.K. Rowling");
+        Book b1 = new Book("Book1", author, 500, "Fiction");
+        Book b2 = new Book("Book2", author, 400, "Fiction");
+
         Cart cart = new Cart();
-        Book book = new Book("Java Basics", new Author("John Doe"), 500, "Programming");
+        cart.addBook(b1);
+        cart.addBook(b2);
 
-        cart.addBook(book);
-        assertEquals(1, cart.getBooks().size(), "Book should be added to the cart");
+        CartPriceCalculator priceCalc = new CartPriceCalculator();
+        double total = priceCalc.calculateTotal(cart);
 
-        cart.removeBook(book);
-        assertEquals(0, cart.getBooks().size(), "Book should be removed from the cart");
+        DiscountCalculator discount = new FlatDiscountCalculator(300);
+        DiscountContext context = new DiscountContext(discount);
+        double discounted = context.applyDiscount(total);
+
+        assertEquals(600.0, discounted, 0.01);
     }
 
-    @Test
-    public void testCartTotalWithPercentageDiscount() {
+    @Test(expected = InvalidBookException.class)
+    public void testRemoveInvalidBook() throws Exception {
         Cart cart = new Cart();
-        cart.addBook(new Book("Java", new Author("A"), 100, "Programming"));
-        cart.addBook(new Book("Python", new Author("B"), 200, "Programming"));
-
-        DiscountStrategy strategy = new PercentageDiscount(10); // 10% off
-        double total = cart.calculateTotal(strategy);
-
-        assertEquals(270.0, total, 0.01, "Total should reflect 10% discount");
-    }
-
-    @Test
-    public void testCartTotalWithoutDiscount() {
-        Cart cart = new Cart();
-        cart.addBook(new Book("C#", new Author("E"), 300, "Programming"));
-
-        DiscountStrategy strategy = new NoDiscount();
-        double total = cart.calculateTotal(strategy);
-
-        assertEquals(300.0, total, 0.01, "Total should reflect no discount");
-    }
-
-    @Test
-    public void testCalculateTotalWithNullDiscountThrowsException() {
-        Cart cart = new Cart();
-        cart.addBook(new Book("Kotlin", new Author("F"), 400, "Programming"));
-
-        assertThrows(InvalidDiscountException.class, () -> {
-            cart.calculateTotal(null);
-        }, "Should throw InvalidDiscountException when discount strategy is null");
-    }
-
-    @Test
-    public void testRemoveNonExistentBook() {
-        Cart cart = new Cart();
-        Book book1 = new Book("Swift", new Author("G"), 200, "Programming");
-        Book book2 = new Book("Scala", new Author("H"), 300, "Programming");
-
-        cart.addBook(book1);
-        cart.removeBook(book2); // book2 was never added
-
-        assertEquals(1, cart.getBooks().size(), "Removing a non-existent book should not change the cart");
+        Author author = new Author("Unknown");
+        Book book = new Book("Ghost Book", author, 100, "Mystery");
+        cart.removeBook(book); // should throw
     }
 }

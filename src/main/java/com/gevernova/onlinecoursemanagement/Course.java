@@ -1,4 +1,5 @@
 package com.gevernova.onlinecoursemanagement;
+
 import java.util.List;
 
 // STEP 1 - COURSE CLASS TO INITIALIZE THE COURSE VARIABLES
@@ -17,10 +18,9 @@ public class Course {
 
     // getters to get the private values
     public String getName(){
-    return name;
+        return name;
     }
     public List<Module> getModules(){
-    return modules;
+        return modules;
     }
 }
-

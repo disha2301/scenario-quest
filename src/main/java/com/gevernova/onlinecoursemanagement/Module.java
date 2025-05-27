@@ -22,4 +22,3 @@ public class Module {
         return passingMarks;
     }
 }
-
