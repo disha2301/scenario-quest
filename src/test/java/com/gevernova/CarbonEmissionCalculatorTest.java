@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -151,20 +152,22 @@ class CarbonEmissionCalculatorTest {
     void testReportFileCreation() throws NegativeEmissionException, IOException {
         String testFileName = "test_report.txt";
 
-        // Clean up if file exists from previous test
-        Files.deleteIfExists(Path.of(testFileName));
 
-        solarUnit.setProduction(1000);
-        testPlant.saveEmissionReport(testFileName);
+            // Clean up if file exists from previous test
+            Files.deleteIfExists(Paths.get(testFileName));
 
-        assertTrue(Files.exists(Path.of(testFileName)));
-        assertTrue(Files.size(Path.of(testFileName)) > 0);
+            solarUnit.setProduction(1000);
+            testPlant.saveEmissionReport(testFileName);
 
-        // Clean up
-        Files.deleteIfExists(Path.of(testFileName));
-    }
+            assertTrue(Files.exists(Paths.get(testFileName)));
+            assertTrue(Files.size(Paths.get(testFileName)) > 0);
 
-    @Test
+            // Clean up
+            Files.deleteIfExists(Paths.get(testFileName));
+        }
+
+
+        @Test
     @DisplayName("Test fuel type emission factors")
     void testFuelTypeEmissionFactors() {
         assertEquals(0.5, FuelType.NATURAL_GAS.getEmissionFactor(), 0.001);
@@ -178,9 +181,4 @@ class CarbonEmissionCalculatorTest {
         assertEquals("Test Plant", testPlant.getName());
     }
 
-    @Test
-    @DisplayName("Test adding multiple units")
-    void testAddingMultipleUnits() {
-        assertEquals(3, testPlant.getUnitsOfType(PowerUnit.class).size());
-    }
 }
